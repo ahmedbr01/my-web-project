@@ -1,0 +1,258 @@
+<div class="projects-page">
+  <!-- Hero Section -->
+  <section class="projects-hero">
+    <div class="hero-content">
+      <h1>🎯 Nos Réalisations</h1>
+      <p>Découvrez nos projets de construction, rénovation et design d'intérieur</p>
+      
+      <!-- Bouton Admin - Ajouter projet -->
+      @if (isAdmin) {
+        <button class="btn-add-project" (click)="openAddProjectModal()">
+          + Ajouter un projet
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Filtres -->
+  <div class="projects-filters">
+    <div class="filter-buttons">
+      <button [class.active]="activeFilter === 'all'" (click)="filterProjects('all')">
+        Tous
+      </button>
+      <button [class.active]="activeFilter === 'construction'" (click)="filterProjects('construction')">
+        🏗️ Construction
+      </button>
+      <button [class.active]="activeFilter === 'renovation'" (click)="filterProjects('renovation')">
+        🛠️ Rénovation
+      </button>
+      <button [class.active]="activeFilter === 'interior'" (click)="filterProjects('interior')">
+        🏠 Intérieur
+      </button>
+      <button [class.active]="activeFilter === 'in_progress'" (click)="filterProjects('in_progress')">
+        🚧 En cours
+      </button>
+      <button [class.active]="activeFilter === 'completed'" (click)="filterProjects('completed')">
+        ✅ Terminés
+      </button>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="projects-gallery">
+    @if (isLoading) {
+      <div class="loading">
+        <div class="spinner"></div>
+        Chargement des projets...
+      </div>
+    }
+
+    @if (filteredProjects.length === 0 && !isLoading) {
+      <div class="no-projects">
+        <p>📭 Aucun projet à afficher</p>
+        @if (isAdmin) {
+          <button class="btn-add" (click)="openAddProjectModal()">
+            + Créer le premier projet
+          </button>
+        }
+      </div>
+    }
+
+    <div class="projects-grid">
+      @for (project of filteredProjects; track project.id) {
+        <div class="project-card" [class.featured]="project.isFeatured">
+          <!-- Badge Statut -->
+          <div class="project-badge" [ngClass]="getStatusClass(project.status)">
+            @if (project.status === 'completed') {
+              ✅ Terminé
+            } @else if (project.status === 'in_progress') {
+              🚧 En cours
+            } @else {
+              {{ project.status }}
+            }
+          </div>
+
+          <!-- Images - CORRECTION COMPLÈTE -->
+          <div class="project-images">
+            @if (project.images && project.images.length > 0) {
+              <!-- Utiliser getImageUrl() et gérer les erreurs -->
+              <img [src]="getImageUrl(project.images[0])" 
+                   [alt]="project.title"
+                   (click)="openGallery(project)"
+                   (error)="onImageError($event, project.images[0])"
+                   loading="lazy">
+              <div class="image-count" *ngIf="project.images.length > 1">
+                +{{ project.images.length - 1 }}
+              </div>
+            } @else {
+              <div class="no-image">
+                🏗️
+              </div>
+            }
+          </div>
+
+          <!-- Infos -->
+          <div class="project-info">
+            <h3>{{ project.title }}</h3>
+            <div class="project-meta">
+              <span class="type">{{ project.type | titlecase }}</span>
+              <span class="location">📍 {{ project.location || 'Tunis' }}</span>
+              <span class="surface">📐 {{ project.surface }} m²</span>
+            </div>
+            <p class="description">
+              {{ project.description | slice:0:100 }}
+              {{ project.description.length > 100 ? '...' : '' }}
+            </p>
+            <div class="project-actions">
+              <button class="btn-view" (click)="viewProjectDetails(project)">
+                Voir détails
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modal Ajout Projet (Admin) -->
+  @if (showAddModal) {
+    <div class="modal-overlay" (click)="closeAddModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>➕ Ajouter un projet</h2>
+          <button class="close-btn" (click)="closeAddModal()">×</button>
+        </div>
+
+        <form (ngSubmit)="submitProject()" #projectForm="ngForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label>Titre du projet *</label>
+            <input type="text" [(ngModel)]="newProject.title" name="title" required>
+          </div>
+
+          <div class="form-group">
+            <label>Type de projet *</label>
+            <select [(ngModel)]="newProject.type" name="type" required>
+              <option value="construction">Construction</option>
+              <option value="renovation">Rénovation</option>
+              <option value="interior">Design intérieur</option>
+              <option value="extension">Extension</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Catégorie</label>
+            <select [(ngModel)]="newProject.category" name="category">
+              <option value="residential">Résidentiel</option>
+              <option value="commercial">Commercial</option>
+              <option value="industrial">Industriel</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Statut *</label>
+            <select [(ngModel)]="newProject.status" name="status" required>
+              <option value="completed">Terminé</option>
+              <option value="in_progress">En cours</option>
+              <option value="planned">Planifié</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description *</label>
+            <textarea [(ngModel)]="newProject.description" name="description" rows="4" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Surface (m²)</label>
+            <input type="number" [(ngModel)]="newProject.surface" name="surface">
+          </div>
+
+          <div class="form-group">
+            <label>Localisation</label>
+            <input type="text" [(ngModel)]="newProject.location" name="location">
+          </div>
+
+          <!-- Upload Images -->
+          <div class="form-group">
+            <label>Images du projet</label>
+            <div class="file-upload">
+              <input type="file" #fileInput multiple accept="image/*" 
+                     (change)="onFileSelected($event)">
+              <button type="button" class="btn-upload" (click)="fileInput.click()">
+                📸 Choisir des images
+              </button>
+              <div class="file-list">
+                @for (file of selectedFiles; track file.name) {
+                  <div class="file-item">
+                    📷 {{ file.name }}
+                    <button type="button" (click)="removeFile(file)">×</button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group checkbox">
+            <label>
+              <input type="checkbox" [(ngModel)]="newProject.isFeatured" name="isFeatured">
+              Mettre en avant ce projet
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="closeAddModal()">
+              Annuler
+            </button>
+            <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+              @if (isSubmitting) {
+                ⏳ Enregistrement...
+              } @else {
+                💾 Enregistrer le projet
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Gallery - CORRECTION COMPLÈTE -->
+  @if (showGallery && selectedProject) {
+    <div class="gallery-modal" (click)="closeGallery()">
+      <div class="gallery-content" (click)="$event.stopPropagation()">
+        <div class="gallery-header">
+          <h3>{{ selectedProject.title }}</h3>
+          <button class="close-btn" (click)="closeGallery()">×</button>
+        </div>
+        
+        <div class="gallery-main">
+          <!-- CORRECTION: Utiliser displayUrl ou getImageUrl() -->
+          <img [src]="selectedProject.images[currentImageIndex].displayUrl || 
+                      getImageUrl(selectedProject.images[currentImageIndex])" 
+               [alt]="selectedProject.title"
+               (error)="onImageError($event, selectedProject.images[currentImageIndex])">
+        </div>
+        
+        <div class="gallery-thumbnails">
+          @for (image of selectedProject.images; track image.filename; let i = $index) {
+            <!-- CORRECTION: Utiliser displayUrl ou getImageUrl() -->
+            <img [src]="image.displayUrl || getImageUrl(image)" 
+                 [class.active]="i === currentImageIndex"
+                 (click)="changeImage(i)"
+                 [alt]="'Image ' + (i + 1)"
+                 (error)="onImageError($event, image)">
+          }
+        </div>
+        
+        <div class="gallery-nav">
+          <button (click)="prevImage()" [disabled]="currentImageIndex === 0">‹</button>
+          <span>{{ currentImageIndex + 1 }} / {{ selectedProject.images.length }}</span>
+          <button (click)="nextImage()" 
+                  [disabled]="currentImageIndex === selectedProject.images.length - 1">
+            ›
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

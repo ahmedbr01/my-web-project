@@ -1,0 +1,178 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+}
+
+.d1 {
+    background-color: #d1e5f4;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-bottom: 40px;
+    min-height: 100vh;
+}
+
+.mar {
+    padding-top: 40px;
+}
+
+.form_box {
+    background-color: #b8b7fd42;
+    margin: 0 auto;
+    border-radius: 2.5%;
+    box-shadow: 0 20px 25px 8px rgba(0, 0, 0, 0.1);
+    padding-bottom: 40px;
+    transition: all 0.3s ease;
+}
+
+.form_box:not(.active) {
+    display: none;
+}
+
+.form_box.active {
+    display: block;
+}
+
+#login_form {
+    width: 500px;
+    min-height: 470px;
+}
+
+#register_form {
+    width: 500px;
+    min-height: 680px;
+}
+
+form {
+    margin-top: 20px;
+}
+
+.d1_h1 {
+    color: #550816;
+    font-size: 50px;
+    padding-top: 40px;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+label {
+    color: #550816;
+    font-size: 16px;
+    margin-left: 100px;
+    display: block;
+    margin-top: 15px;
+}
+
+input, select {
+    margin-top: 7px;
+    font-size: 15px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    outline: none;
+    width: 300px;
+    height: 38px;
+    padding-left: 10px;
+    cursor: pointer;
+    transition: border 0.3s;
+}
+
+input:focus, select:focus {
+    border-color: #550816;
+}
+
+.intp {
+    text-align: center;
+}
+
+button[type="submit"] {
+    margin-top: 25px;
+    font-size: 18px;
+    width: 300px;
+    margin-left: 100px;
+    background-color: #550816;
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    cursor: pointer;
+    height: 40px;
+    transition: all 0.3s;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    background-color: #092a48;
+}
+
+.p_d1 {
+    color: #550816;
+    font-size: 18px;
+    margin-top: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.link-text {
+    font-weight: bold;
+    text-decoration: underline;
+    color: #092a48;
+}
+
+.link-text:hover {
+    color: #550816;
+}
+
+.error-message {
+    background-color: #ffe6e6;
+    color: #d8000c;
+    padding: 15px;
+    margin: 20px auto;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    border-left: 4px solid #d8000c;
+}
+
+.success-message {
+    background-color: #e6ffe6;
+    color: #2e7d32;
+    padding: 15px;
+    margin: 20px auto;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    border-left: 4px solid #2e7d32;
+}
+.form_box {
+    background-color: #b8b7fd42;
+    margin: 0 auto;
+    border-radius: 2.5%;
+    box-shadow: 0 20px 25px 8px rgba(0, 0, 0, 0.1);
+    padding-bottom: 40px;
+    transition: all 0.3s ease;
+}
+
+/* Cacher les formulaires non actifs */
+.form_box:not(.active) {
+    display: none !important;
+}
+
+/* Afficher le formulaire actif */
+.form_box.active {
+    display: block !important;
+}
+
+#login_form {
+    width: 500px;
+    min-height: 470px;
+}
+
+#register_form {
+    width: 500px;
+    min-height: 680px;
+}

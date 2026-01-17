@@ -1,0 +1,200 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.d_pp{
+    height: 200px;
+    width: 1220px;
+    background-color: #a6bacf9c;
+}
+.tit_p{
+    font-family:'Open Sans', sans-serif;
+    color: #092a48;
+    padding-top: 50px;
+    font-size: 50px;
+    text-align: center;
+}
+.prag_p{
+    color: #15497aca;
+    font-family:'Open Sans', sans-serif;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 10px;
+}
+.tit_d2{
+    color:#550816 ;
+    font-size:40px;
+    margin-top: 60px;
+    font-family:'Open Sans', sans-serif;
+}
+.p_d2{
+    color:#475569;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-top: 20px;
+    font-family:'Open Sans', sans-serif;
+}
+.d2{
+    margin-left: 20px;
+    background-color: white;
+    height: 80vh;
+    min-height: 720px;
+    margin: 0;
+    display: flex;
+}
+.im_d2{
+    margin-top: 60px;
+    height: 500px;
+    width:400px ;
+    border-radius: 40px;
+    margin-right: 20px;
+    margin-left: 60px ;
+}
+.pd{
+    margin-left: 40px;
+}
+.btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background-color: #550816;
+    color: #dde4ee;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: 0.3s;
+    margin-top: 40px;
+    font-family:'Open Sans', sans-serif;
+}
+.btn:hover {
+    background-color: #092a48;
+    transform: translateY(-2px);
+}
+.d3{
+    background-color: #e5e4fa79;
+    height: 230vh;
+    min-height: 600px;
+}
+.tit_d3{
+    padding-top: 60px;
+}
+.p_d3{
+    text-align: center;
+    color: #550816;
+    font-family:'Open Sans', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+}
+.h1_d3{
+    text-align: center;
+    color: #092a48;
+    font-family:'Open Sans', sans-serif;
+    font-size: 40px;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+.line {
+    position: relative;
+    max-width: 1200px;
+    margin-top: 60px;
+}
+.line::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background-color: #092a48;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -2px;  
+    border-radius: 20px;    
+}
+.d_s{
+    padding-top: 20px;
+    margin-left: 20px;
+}
+.date{
+    background-color: #092a48;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-family:'Open Sans', sans-serif;
+}
+.item_g{
+    background-color: white;
+    width: 520px;
+    height: 200px;
+    margin-top: 20px;
+    margin-left: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.071);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    z-index: 20;
+}
+
+.h3_item{
+    color: #092a48;
+    font-family:'Open Sans', sans-serif;
+    margin-top: 20px;
+    margin-left: 20px;
+    font-size: 27px;
+}
+.p_item{
+    font-family:'Open Sans', sans-serif;
+    margin-top: 17px;
+    margin-left: 20px;
+    margin-right: 10px;
+    color: #475569c7;
+    font-size: 17px;
+    line-height: 1.6;
+}
+.item_d{
+    background-color: white;
+    width: 520px;
+    height: 200px;
+    margin-top: 20px;
+    margin-left: 635px;
+    border-radius: 20px;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.071);
+    position: relative; 
+    cursor: pointer;
+    transition: all 0.5s ease;
+    z-index: 20;
+}
+.item_g .bulle::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 546px; 
+    background-color: white;
+    border: 4px solid #550816;
+    top: 65px;
+    border-radius: 50%;
+    z-index: 2;
+    transition: 0.3s;
+}.item_d .bulle::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: -49px;
+    background-color: white;
+    border: 4px solid #550816;
+    top: 65px;
+    border-radius: 50%;
+    z-index: 2; 
+    transition: 0.3s;
+}
+.bulle:hover::after {
+    background-color: #550816;
+    transform: scale(1.2);
+}
+.item_g:hover, .item_d:hover {
+    transform: translateY(-10px); 
+    box-shadow: 0 20px 40px rgba(9, 42, 72, 0.15);
+    z-index: 10; 
+}

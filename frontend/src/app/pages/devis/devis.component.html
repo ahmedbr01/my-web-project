@@ -1,0 +1,248 @@
+<div class="devis-container">
+  <div class="devis-header">
+    <h1><span class="icon">📋</span> Demande de Devis</h1>
+    <p class="subtitle">Remplissez ce formulaire pour obtenir un devis personnalisé pour votre projet</p>
+  </div>
+
+  <!-- Messages d'erreur -->
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-content">
+        <strong>Erreur :</strong> {{ errorMessage }}
+      </div>
+    </div>
+  }
+
+  <!-- Message de succès -->
+  @if (showSuccess) {
+    <div class="alert alert-success">
+      <span class="alert-icon">✅</span>
+      <div class="alert-content">
+        <strong>Succès !</strong> {{ successMessage }}
+        <div class="success-details">
+          Nous vous contacterons dans les 24-48 heures.
+          <!-- CORRECTION: Utiliser isLoggedIn() au lieu de authService.isLoggedIn() -->
+          @if (isLoggedIn()) {
+            <div class="redirect-message">
+              Redirection vers votre tableau de bord...
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Formulaire -->
+  @if (!showSuccess) {
+    <form class="devis-form" (ngSubmit)="submitDevis()" #devisForm="ngForm">
+      
+      <!-- Section 1: Informations personnelles -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">👤</div>
+          <h2>Informations personnelles</h2>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientName">
+              Nom complet <span class="required">*</span>
+            </label>
+            <input type="text" id="clientName" 
+                   [(ngModel)]="devisData.clientName" 
+                   name="clientName" 
+                   required
+                   placeholder="Votre nom et prénom">
+            <div class="form-hint">Nous avons besoin de votre nom pour vous contacter</div>
+          </div>
+
+          <div class="form-group">
+            <label for="clientEmail">
+              Adresse email <span class="required">*</span>
+            </label>
+            <input type="email" id="clientEmail" 
+                   [(ngModel)]="devisData.clientEmail" 
+                   name="clientEmail" 
+                   required
+                   placeholder="exemple@email.com">
+            <div class="form-hint">Nous vous enverrons le devis à cette adresse</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientPhone">Numéro de téléphone</label>
+            <input type="tel" id="clientPhone" 
+                   [(ngModel)]="devisData.clientPhone" 
+                   name="clientPhone"
+                   placeholder="71 234 567">
+            <div class="form-hint">Pour vous contacter plus rapidement</div>
+          </div>
+
+          <div class="form-group">
+            <label for="projectAddress">Adresse du projet</label>
+            <input type="text" id="projectAddress" 
+                   [(ngModel)]="devisData.projectAddress" 
+                   name="projectAddress" 
+                   placeholder="Ex: Rue Habib Bourguiba, Tunis">
+            <div class="form-hint">Où se situe votre projet ?</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Détails du projet -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">🏗️</div>
+          <h2>Détails du projet</h2>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="projectType">
+              Type de projet <span class="required">*</span>
+            </label>
+            <select id="projectType" 
+                    [(ngModel)]="devisData.projectType" 
+                    name="projectType" required>
+              <option value="construction">Construction neuve</option>
+              <option value="renovation">Rénovation / Réhabilitation</option>
+              <option value="interior">Aménagement intérieur</option>
+              <option value="extension">Extension / Agrandissement</option>
+              <option value="other">Autre type de travaux</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="surface">Surface (m²)</label>
+            <div class="input-with-unit">
+              <input type="number" id="surface" 
+                     [(ngModel)]="devisData.surface" 
+                     name="surface" 
+                     min="0" 
+                     step="0.1"
+                     placeholder="0">
+              <span class="input-unit">m²</span>
+            </div>
+            <div class="form-hint">Superficie totale à construire/rénover</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="budget">Budget estimé</label>
+            <div class="input-with-unit">
+              <input type="text" id="budget" 
+                     [(ngModel)]="devisData.budget" 
+                     name="budget"
+                     placeholder="50,000">
+              <span class="input-unit">DT</span>
+            </div>
+            <div class="form-hint">Budget approximatif que vous envisagez</div>
+          </div>
+
+          <div class="form-group">
+            <label for="deadline">Date souhaitée de début</label>
+            <input type="date" id="deadline" 
+                   [(ngModel)]="devisData.deadline" 
+                   name="deadline"
+                   [min]="getMinDate()">
+            <div class="form-hint">Date à laquelle vous souhaitez commencer</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="style">Style architectural souhaité</label>
+          <input type="text" id="style" 
+                 [(ngModel)]="devisData.style" 
+                 name="style" 
+                 placeholder="Ex: Moderne, Traditionnel, Contemporain, Minimaliste...">
+          <div class="form-hint">Décrivez le style que vous préférez</div>
+        </div>
+      </div>
+
+      <!-- Section 3: Travaux demandés -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">🔧</div>
+          <h2>Travaux demandés</h2>
+        </div>
+        
+        <p class="section-description">Sélectionnez les types de travaux dont vous avez besoin :</p>
+        
+        <div class="tasks-grid">
+          @for (task of availableTasks; track task) {
+            <div class="task-item" 
+                 [class.selected]="isTaskSelected(task)"
+                 (click)="toggleTask(task)">
+              <span class="task-icon">{{ isTaskSelected(task) ? '✓' : '+' }}</span>
+              <span class="task-text">{{ task }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="additionalTasks">Autres travaux ou précisions</label>
+          <textarea id="additionalTasks" 
+                    [(ngModel)]="devisData.additionalTasks" 
+                    name="additionalTasks" 
+                    rows="4"
+                    placeholder="Décrivez d'autres travaux spécifiques, des exigences particulières, ou toute précision supplémentaire..."></textarea>
+          <div class="form-hint">Plus vous serez précis, plus notre devis sera exact</div>
+        </div>
+      </div>
+
+      <!-- Section 4: Description détaillée -->
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-icon">📝</div>
+          <h2>Description détaillée du projet</h2>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">
+            Description <span class="required">*</span>
+          </label>
+          <textarea id="description" 
+                    [(ngModel)]="devisData.description" 
+                    name="description" 
+                    rows="6" 
+                    required
+                    placeholder="Décrivez votre projet en détail :
+• Quels sont vos besoins ?
+• Y a-t-il des contraintes particulières ?
+• Avez-vous des plans ou croquis ?
+• Quelle est la disposition souhaitée ?
+• Autres informations importantes..."></textarea>
+          <div class="form-hint">Une description détaillée nous aide à comprendre exactement ce dont vous avez besoin</div>
+        </div>
+      </div>
+
+      <!-- Section 5: Actions -->
+      <div class="form-actions">
+        <div class="actions-info">
+          <p class="required-info"><span class="required">*</span> Champs obligatoires</p>
+          <p class="privacy-info">🔒 Vos informations sont confidentielles et sécurisées</p>
+        </div>
+        
+        <div class="action-buttons">
+          <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isLoading">
+            <span class="btn-icon">←</span>
+            <span class="btn-text">Annuler</span>
+          </button>
+          
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            @if (isLoading) {
+              <span class="btn-icon">⏳</span>
+              <span class="btn-text">Envoi en cours...</span>
+            } @else {
+              <span class="btn-icon">📤</span>
+              <span class="btn-text">Envoyer la demande de devis</span>
+            }
+          </button>
+        </div>
+      </div>
+    </form>
+  }
+</div>

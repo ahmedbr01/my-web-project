@@ -1,0 +1,289 @@
+<div class="admin-dashboard">
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <nav class="admin-nav">
+      <div class="nav-brand">
+        🏗️ Sadraoui Construction - Dashboard Admin
+      </div>
+      
+      <div class="admin-actions">
+        <button class="btn-refresh" (click)="refreshData()" title="Rafraîchir">
+          🔄 Rafraîchir
+        </button>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Dashboard Content -->
+  <main class="dashboard-content">
+    <div class="dashboard-header">
+      <h1>Tableau de bord Administrateur</h1>
+      <div class="current-date">{{ currentDate | date:'fullDate' }}</div>
+    </div>
+
+    @if (isLoading) {
+      <div class="loading">
+        ⏳ Chargement des données en cours...
+      </div>
+    }
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.activeProjects }}</div>
+        <div class="stat-label">Projets actifs</div>
+      </div>
+      <div class="stat-card urgent">
+        <div class="stat-value">{{ stats.urgentProblems }}</div>
+        <div class="stat-label">Problèmes urgents</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.totalClients }}</div>
+        <div class="stat-label">Clients</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.monthlyRevenue | currency:'EUR' }}</div>
+        <div class="stat-label">Revenu ce mois</div>
+      </div>
+    </div>
+
+    <!-- Gestion des Clients -->
+    <div class="clients-section">
+      <div class="section-header">
+        <h2>Gestion des Clients ({{ clients.length }})</h2>
+        <button class="btn-refresh-small" (click)="loadClients()" title="Rafraîchir">
+          🔄
+        </button>
+      </div>
+      
+      @if (clients.length > 0) {
+        <div class="clients-list">
+          <table class="clients-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Rôle</th>
+                <th>Date d'inscription</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (client of clients; track client.id) {
+                <tr>
+                  <td class="client-id">#{{ client.id }}</td>
+                  <td class="client-name">
+                    {{ client.prenom }} {{ client.nom }}
+                  </td>
+                  <td class="client-email">{{ client.email }}</td>
+                  <td class="client-phone">{{ client.telephone || 'Non fourni' }}</td>
+                  <td class="client-role">
+                    <span class="role-badge" [ngClass]="client.role === 'admin' ? 'role-admin' : 'role-client'">
+                      {{ client.role === 'admin' ? 'Administrateur' : 'Client' }}
+                    </span>
+                  </td>
+                  <td class="client-date">
+                    {{ client.created_at | date:'dd/MM/yyyy' }}
+                  </td>
+                  <td class="client-actions">
+                    @if (client.role !== 'admin') {
+                      <button class="btn-delete" (click)="deleteClient(client)" title="Supprimer">
+                        🗑️
+                      </button>
+                    } @else {
+                      <span class="text-muted">Admin principal</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="no-data">
+          <p>📭 Aucun client trouvé</p>
+          <button class="btn-retry" (click)="loadClients()">
+            Réessayer
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Gestion des Projets -->
+    <div class="projects-section">
+      <div class="section-header">
+        <h2>Tous les projets ({{ projects.length }})</h2>
+        <button class="btn-refresh-small" (click)="loadProjects()" title="Rafraîchir les projets">
+          🔄
+        </button>
+      </div>
+      
+      @if (projects.length > 0) {
+        <div class="projects-list">
+          <table class="projects-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Type</th>
+                <th>Surface</th>
+                <th>Budget</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (project of projects; track project.id) {
+                <tr>
+                  <td class="project-id">#{{ project.id }}</td>
+                  <td class="project-client">
+                    <div class="client-name">{{ project.clientName }}</div>
+                    <div class="client-email">{{ project.clientEmail }}</div>
+                  </td>
+                  <td class="project-type">{{ project.projectType }}</td>
+                  <td class="project-surface">{{ project.surface }} m²</td>
+                  <td class="project-budget">{{ project.budget || 'Non défini' }}</td>
+                  <td class="project-date">
+                    {{ project.createdAt | date:'dd/MM/yyyy' }}
+                  </td>
+                  <td class="project-status">
+                    <span class="status-badge" [ngClass]="getStatusClass(project.status)">
+                      @if (project.status === 'pending') {
+                        En attente
+                      } @else if (project.status === 'in_progress') {
+                        En cours
+                      } @else if (project.status === 'completed') {
+                        Terminé
+                      } @else {
+                        {{ project.status }}
+                      }
+                    </span>
+                  </td>
+                  <td class="project-actions">
+                    <button class="btn-view-small" (click)="viewProjectDetails(project)" title="Voir">
+                      👁️
+                    </button>
+                    <button class="btn-delete-small" (click)="deleteProject(project)" title="Supprimer">
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="no-data">
+          <p>📭 Aucun projet trouvé dans la base de données</p>
+          <button class="btn-retry" (click)="loadProjects()">
+            Réessayer
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Recent Projects Section -->
+    <div class="recent-projects-section">
+      <div class="section-header">
+        <h2>Projets récents</h2>
+      </div>
+      
+      @if (recentProjects.length > 0) {
+        <div class="recent-projects-grid">
+          @for (project of recentProjects; track project.id) {
+            <div class="recent-project-card">
+              <div class="project-header">
+                <h3>{{ project.clientName }}</h3>
+                <span class="project-badge">{{ project.projectType }}</span>
+              </div>
+              
+              <p class="project-email">📧 {{ project.clientEmail }}</p>
+              
+              <p class="project-description">
+                {{ project.description || 'Aucune description' | slice:0:120 }}
+                {{ (project.description && project.description.length > 120) ? '...' : '' }}
+              </p>
+              
+              <div class="project-meta">
+                <span class="meta-item">
+                  📐 {{ project.surface }} m²
+                </span>
+                <span class="meta-item">
+                  💰 {{ project.budget || 'Budget non défini' }}
+                </span>
+                <span class="meta-item">
+                  📅 {{ project.createdAt | date:'dd/MM/yyyy' }}
+                </span>
+              </div>
+              
+              <div class="project-footer">
+                <span class="status-badge" [ngClass]="getStatusClass(project.status)">
+                  {{ project.status === 'pending' ? 'En attente' : 'En cours' }}
+                </span>
+                <button class="btn-view" (click)="viewProjectDetails(project)">
+                  Voir plus
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-data">
+          <p>Aucun projet récent à afficher</p>
+        </div>
+      }
+    </div>
+
+    <!-- Problems Section -->
+    <div class="problems-section">
+      <div class="section-header">
+        <h2>Problèmes signalés ({{ problems.length }})</h2>
+        <span class="badge">{{ stats.urgentProblems }} urgents</span>
+      </div>
+      
+      @if (problems.length > 0) {
+        <div class="problems-list">
+          @for (problem of problems; track problem.id) {
+            <div class="problem-card">
+              <div class="problem-header">
+                <div class="client-info">
+                  <div class="client-name">{{ problem.clientName }}</div>
+                  <div class="problem-date">📅 {{ problem.date }}</div>
+                </div>
+                <div class="priority-badge" [ngClass]="getPriorityClass(problem.priority)">
+                  {{ problem.priority }}
+                </div>
+              </div>
+              
+              <div class="problem-description">
+                {{ problem.description }}
+              </div>
+              
+              <div class="problem-footer">
+                <div class="status-badge" [ngClass]="getStatusClass(problem.status)">
+                  {{ problem.status }}
+                </div>
+                <div class="problem-actions">
+                  <button class="btn-view" (click)="viewProblemDetails(problem)">
+                    Voir détails
+                  </button>
+                  <button class="btn-resolve" (click)="resolveProblem(problem)">
+                    Marquer résolu
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-data">
+          <p>✅ Aucun problème signalé pour le moment</p>
+        </div>
+      }
+    </div>
+  </main>
+</div>

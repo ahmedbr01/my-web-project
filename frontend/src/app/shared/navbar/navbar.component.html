@@ -1,0 +1,29 @@
+<nav class="navbar">
+  <div class="nav-brand">
+    <a routerLink="/">🏗️ Sadraoui Construction</a>
+  </div>
+  
+  <div class="nav-links">
+    <a routerLink="/">Accueil</a>
+    <a routerLink="/about">À propos</a>
+    <a routerLink="/projects">Projets</a>
+    <a routerLink="/solutions">Solutions</a>
+    
+    @if (isLoggedIn) {
+      <a routerLink="/devis">Demande de devis</a>
+      
+      @if (isAdmin) {
+        <a routerLink="/admin">Dashboard Admin</a>
+      } @else {
+        <a routerLink="/client-dashboard">Mon Espace</a>
+      }
+      
+      <a href="#" (click)="logout(); $event.preventDefault()">Déconnexion</a>
+      <span class="user-welcome">
+        Bonjour, {{ user?.prenom || 'Utilisateur' }}
+      </span>
+    } @else {
+      <a routerLink="/connexion">Connexion</a>
+    }
+  </div>
+</nav>

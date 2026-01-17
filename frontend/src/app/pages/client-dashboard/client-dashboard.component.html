@@ -1,0 +1,106 @@
+<div class="client-dashboard">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Mon Espace Client</h1>
+      <div class="user-info">
+        <span class="welcome">Bienvenue, {{ user?.prenom || 'Client' }}</span>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-content">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.totalProjects }}</div>
+        <div class="stat-label">Projets</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.pendingProjects }}</div>
+        <div class="stat-label">En attente</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.inProgressProjects }}</div>
+        <div class="stat-label">En cours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.completedProjects }}</div>
+        <div class="stat-label">Terminés</div>
+      </div>
+    </div>
+
+    <!-- Actions Rapides -->
+    <div class="quick-actions">
+      <h2>Actions Rapides</h2>
+      <div class="actions-grid">
+        <button class="action-btn" routerLink="/devis">
+          <span class="icon">➕</span>
+          <span class="text">Nouveau Devis</span>
+        </button>
+        <button class="action-btn" (click)="refreshProjects()">
+          <span class="icon">🔄</span>
+          <span class="text">Rafraîchir</span>
+        </button>
+        <button class="action-btn" (click)="contactSupport()">
+          <span class="icon">📞</span>
+          <span class="text">Support</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mes Projets -->
+    <div class="projects-section">
+      <div class="section-header">
+        <h2>Mes Projets ({{ projects.length }})</h2>
+        <button class="btn-refresh" (click)="refreshProjects()" title="Rafraîchir">
+          🔄
+        </button>
+      </div>
+
+      @if (isLoading) {
+        <div class="loading">
+          ⏳ Chargement de vos projets...
+        </div>
+      }
+
+      @if (projects.length > 0) {
+        <div class="projects-grid">
+          @for (project of projects; track project.id) {
+            <div class="project-card" [ngClass]="getStatusClass(project.status)">
+              <div class="project-header">
+                <h3>{{ project.projectType | titlecase }}</h3>
+                <span class="project-status">{{ getStatusText(project.status) }}</span>
+              </div>
+              
+              <div class="project-info">
+                <p><strong>📍 Adresse:</strong> {{ project.projectAddress }}</p>
+                <p><strong>📏 Surface:</strong> {{ project.surface }} m²</p>
+                <p><strong>💰 Budget:</strong> {{ project.budget || 'Non défini' }}</p>
+                <p><strong>📅 Date:</strong> {{ project.createdAt | date:'dd/MM/yyyy' }}</p>
+              </div>
+              
+              <div class="project-description">
+                <p>{{ project.description || 'Aucune description' | slice:0:100 }}...</p>
+              </div>
+              
+              <div class="project-actions">
+                <button class="btn-view" (click)="viewProjectDetails(project)">
+                  Voir détails
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (!isLoading) {
+        <div class="no-projects">
+          <p>📭 Vous n'avez pas encore de projet</p>
+          <button class="btn-primary" routerLink="/devis">
+            Créer mon premier projet
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
